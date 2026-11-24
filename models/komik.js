@@ -1,17 +1,23 @@
-const db = require('../models');
+module.exports = (sequelize, DataTypes) => {
+  const Komik = sequelize.define("Komik", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    author: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  });
 
-async function connectDatabase() {
-    try {
-        await db.sequelize.authenticate();
-        console.log('Database connected successfully');
-
-        await db.sequelize.sync({alter: true});
-        console.log('Database synchronized');
-
-    } catch (err) {
-        console.error(' Database connection failed:', err.message);
-        process.exit(1);
-    }
-}
-
-module.exports = connectDatabase
+  return Komik;
+};
