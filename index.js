@@ -1,7 +1,18 @@
-const path = require('path');
-module.exports = {
-    'config': path.resolve('config', 'config.js'),
-    'models-path': path.resolve('models'),
-    'seeders-path': path.resolve('seeders'),
-    'migrations-path': path.resolve('migrations')
-};
+require("dotenv").config();
+const express = require("express");
+const connectDatabase = require("./config/db");
+const app = express();
+const PORT = process.env.PORT;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api", require("./routes/api"));
+
+async function startServer() {
+  await connectDatabase();
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+startServer();
