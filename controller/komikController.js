@@ -1,5 +1,4 @@
 const db = require('../models');
-const komik = require('../models/komik');
 
 async function getAllKomik(req, res) {
     try{
