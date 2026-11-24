@@ -1,29 +1,22 @@
 const jwt = require("jsonwebtoken");
+
 const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Format: Bearer <token>
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Akses ditolak. Token tidak ditemukan.",
+    });
+  }
+
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({
-        message: "Authorization token tidak ditemukan.",
-      });
-    }
-    const [scheme, token] = authHeader.trim().split(/\s+/);
-    if (scheme !== "Bearer") {
-      return res.status(401).json({
-        message: "Format token tidak valid.",
-      });
-    }
-    if (!token) {
-      return res.status(401).json({
-        message: "Format token tidak valid.",
-      });
-    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({
-      message: "Token tidak valid atau telah kedaluwarsa.",
+    return res.status(403).json({
+      message: "Token tidak valid atau sudah kedaluwarsa.",
     });
   }
 };
